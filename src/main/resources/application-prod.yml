@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/adkblog?userUnicode=true&characterEncoding=UTF-8&serverTimeZone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username:yourusername
+    password:yourpassword
+
+  application:
+    name: adk_blog
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+  global-config:
+    db-config:
+      table-prefix: bl_
+
+aliyun:
+  accessKeyId: yourdid
+  accessKeySecret: yourkeysecret
+  endpoint: endpoint
+  bucketName: bucketName
+server:
+  port: 6789

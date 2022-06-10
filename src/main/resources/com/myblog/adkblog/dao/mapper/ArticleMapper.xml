@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace写上对应的dao名路径-->
+<mapper namespace="com.myblog.adkblog.dao.mapper.ArticleMapper">
+
+    <resultMap id="articleMap" type="com.myblog.adkblog.pojo.Article">
+        <id column="id" property="id"/>
+        <result column="comment_counts" property="commentCounts"/>
+        <result column="create_date" property="createDate"/>
+        <result column="summary" property="summary"/>
+        <result column="article_name" property="articleName"/>
+        <result column="view_counts" property="viewCounts"/>
+        <result column="author_id" property="authorId"/>
+        <result column="body_id" property="bodyId"/>
+        <result column="banner" property="banner"/>
+    </resultMap>
+
+    <select id="listArticle" resultMap="articleMap">
+        select * from bl_article
+        <where>
+            <if test="authorId !=null">
+                and author_id=#{authorId}
+            </if>
+            <if test="tagIds !=null">
+                and id in
+                (select article_id from
+                    (select article_id,count(article_id)as num
+                    from bl_article_tag
+                    where tag_id in
+                    <foreach collection="tagIds" item="tagId" open="(" close=")" separator=",">
+                        #{tagId}
+                    </foreach>
+                    GROUP BY article_id) as temp
+                  where num=${tagIds.size()})
+            </if>
+            <if test="year!=null and year.length>0 and month!=null and month.length>0">
+                and
+                (YEAR(FROM_UNIXTIME(create_date/1000)) =#{year} and
+                MONTH(FROM_UNIXTIME(create_date/1000)) =#{month})
+            </if>
+            <if test="keyword!=null">
+                and
+                article_name like "%"#{keyword}"%"
+                or
+                summary like "%"#{keyword}"%"
+            </if>
+            and enable=1
+        </where>
+        <choose>
+            <when test="orderRole=='a'.toString()">
+                ORDER BY create_date  ASC
+            </when>
+            <when test='orderRole!=null '>
+                ORDER BY ${orderRole}  DESC
+            </when>
+            <otherwise>
+                ORDER BY create_date  DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <select id="getGroupByTime" resultType="com.myblog.adkblog.dao.mapper.dos.GroupByTime">
+        select distinct DATE_FORMAT(FROM_UNIXTIME(create_date/1000),'%Y年%m月') as date,COUNT(*) as num
+        from bl_article
+        GROUP BY DATE_FORMAT(FROM_UNIXTIME(create_date/1000), '%Y年%m月')
+        order by create_date DESC
+    </select>
+<!--    articleTip-->
+    <select id="articleTip" resultType="com.myblog.adkblog.dao.mapper.dos.ArticleTip">
+        select article_name as articleName from bl_article
+        where
+        article_name like concat('%',#{keyword},'%')
+        or
+        summary like concat('%',#{keyword},'%')
+    </select>
+<!--    <select id="selectCountByQuery" resultMap="articleMap">-->
+<!--        select count(*) as count from bl_article-->
+<!--        <where>-->
+<!--            <if test="authorId !=null">-->
+<!--                and author_id=#{authorId}-->
+<!--            </if>-->
+<!--            <if test="tagId !=null">-->
+<!--                and id in (select article_id from bl_article_tag where tag_id=#{tagId})-->
+<!--            </if>-->
+<!--            <if test="year!=null and year.length>0 and month!=null and month.length>0">-->
+<!--                and-->
+<!--                (YEAR(FROM_UNIXTIME(create_date/1000)) =#{year} and-->
+<!--                MONTH(FROM_UNIXTIME(create_date/1000)) =#{month})-->
+<!--            </if>-->
+<!--        </where>-->
+
+<!--    </select>-->
+</mapper>

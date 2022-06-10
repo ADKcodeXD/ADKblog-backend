@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.myblog.adkblog.dao.mapper.TagMapper">
+    <insert id="addTag" parameterType="String">
+        insert into  bl_tag (tag_name)
+        values (#{tagName})
+    </insert>
+    <select id="findTagByArticleId" parameterType="Long" resultType="com.myblog.adkblog.pojo.Tag">
+        select id,tag_name as tagName from bl_tag
+        where id in
+              (select tag_id from bl_article_tag where article_id=#{articleid})
+    </select>
+</mapper>
