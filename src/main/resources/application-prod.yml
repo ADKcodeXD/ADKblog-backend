@@ -21,7 +21,7 @@ mybatis-plus:
       table-prefix: bl_
 
 aliyun:
-  accessKeyId: yourdid
+  accessKeyId: 8789789789
   accessKeySecret: yourkeysecret
   endpoint: endpoint
   bucketName: bucketName
