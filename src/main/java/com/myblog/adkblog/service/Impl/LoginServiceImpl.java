@@ -13,12 +13,11 @@ import com.myblog.adkblog.vo.Result;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.Serializable;
 import java.util.Map;
-import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class LoginServiceImpl implements LoginService {
@@ -26,23 +25,30 @@ public class LoginServiceImpl implements LoginService {
     private UserService userService;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
-    private static final String slat="adkblog@@#!%$%#%$12";
+    private static final String slat = "adkblog@@#!%$%#%$12";
+
     @Override
     public Result login(LoginParams loginParams) {
-        String username=loginParams.getUsername();
-        String password=loginParams.getPassword();
-        if(StringUtils.isBlank(username)||StringUtils.isBlank(password)){
-            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(),ErrorCode.PARAMS_ERROR.getMsg());
+        String username = loginParams.getUsername();
+        String password = loginParams.getPassword();
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+            return Result.fail(ErrorCode.PARAMS_ERROR.getCode(), ErrorCode.PARAMS_ERROR.getMsg());
         }
-        password=DigestUtils.md5Hex(password+slat);
-        User user=userService.findUser(username,password);
-
-        if(user==null){
-            return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(),ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
+        password = DigestUtils.md5Hex(password + slat);
+        User user = userService.findUser(username, password);
+        if (user == null) {
+            return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(), ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
         }
-
         String token = JWTUtils.createToken(user.getId());
+        if (!StringUtils.isBlank(redisTemplate.opsForValue().get("TOKEN_" + token))) {
+            return Result.fail(ErrorCode.IS_LOGINING.getCode(), ErrorCode.IS_LOGINING.getMsg());
+        }
+        //redis 中默认设置一天过期
+        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(user), 1, TimeUnit.DAYS);
+
         return Result.success(token);
     }
 
@@ -73,25 +79,33 @@ public class LoginServiceImpl implements LoginService {
         //通过jwt加密用户类 并获取token
         String token = JWTUtils.createToken(newer.getId());
 
+        //redis 中默认设置一天过期
+        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(user), 1, TimeUnit.DAYS);
+
         return Result.success(token);
     }
 
     @Override
     public User checkToken(String token) {
-        if(StringUtils.isBlank(token)){
+        if (StringUtils.isBlank(token)) {
             return null;
         }
         System.out.println(token);
         //使用jwtutils来进行token的检验，若不合法则返回空值
         Map<String, Object> map = JWTUtils.checkToken(token);
-        if (map==null){
+        if (map == null) {
             return null;
         }
+        //去redis 取出用户的信息缓存
+        String userJson = redisTemplate.opsForValue().get("TOKEN_" + token);
+        if (StringUtils.isBlank(userJson)) {
+            return null;
+        }
+        //用阿里巴巴的fastjson将字符串解析成对象
+        User user = JSON.parseObject(userJson, User.class);
+        //update in 2022.6.15 引入redis
         //暂时不用redis  直接解析去mysql中获取
-        User user = userMapper.selectById((Serializable) map.get("userId"));
-
+        //User user = userMapper.selectById((Serializable) map.get("userId"));
         return user;
     }
-
-
 }

@@ -70,11 +70,11 @@
     </select>
 <!--    articleTip-->
     <select id="articleTip" resultType="com.myblog.adkblog.dao.mapper.dos.ArticleTip">
-        select article_name as articleName from bl_article
-        where
-        article_name like concat('%',#{keyword},'%')
-        or
-        summary like concat('%',#{keyword},'%')
+        select article_name as articleName
+        from bl_article
+        where article_name like concat('%', #{keyword}, '%')
+           or summary like concat('%', #{keyword}, '%')
+        order by create_date DESC
     </select>
 <!--    <select id="selectCountByQuery" resultMap="articleMap">-->
 <!--        select count(*) as count from bl_article-->

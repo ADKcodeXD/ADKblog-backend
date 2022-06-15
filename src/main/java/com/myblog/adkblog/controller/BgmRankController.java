@@ -1,10 +1,10 @@
 package com.myblog.adkblog.controller;
 
+import com.myblog.adkblog.common.redis.Cache;
 import com.myblog.adkblog.service.BgmRankService;
 import com.myblog.adkblog.vo.BgmRankVo;
 import com.myblog.adkblog.vo.ListInfoVo;
 import com.myblog.adkblog.vo.Params.BgmBrowserParams;
-import com.myblog.adkblog.vo.Params.CommentParams;
 import com.myblog.adkblog.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,10 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class BgmRankController {
     @Autowired
     private BgmRankService bgmRankService;
+
     //利用爬虫爬取bgm首页的排行榜
+    //由于基本不会变动 缓存设置为七天过期
+    //七天防止数据过多
     @PostMapping("getindex")
     @ApiOperation(value = "获取动漫排行榜信息Api")
-    public Result<ListInfoVo<BgmRankVo>> addComment(@RequestBody BgmBrowserParams bgmBrowserParams){
+    @Cache(expire = 1000 * 60 * 60 * 24 * 7)
+    public Result<ListInfoVo<BgmRankVo>> getBgmRankData(@RequestBody BgmBrowserParams bgmBrowserParams) {
         return bgmRankService.getBrowser(bgmBrowserParams);
     }
 }

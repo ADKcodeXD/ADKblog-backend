@@ -38,11 +38,11 @@ public class AliossUtils {
         ossClient.putObject(bucketName, objectName, new ByteArrayInputStream(file.getBytes()), objectMetadata);
         Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 5);
         String url = ossClient.generatePresignedUrl(bucketName, objectName, expiration).toString();
-
+        String regex="\\?";
+        String[] split = url.split(regex);
         if (ossClient != null) {
             ossClient.shutdown();
         }
-
-        return url;
+        return split[0];
     }
 }

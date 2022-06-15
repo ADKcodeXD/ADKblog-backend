@@ -1,5 +1,6 @@
 package com.myblog.adkblog.controller;
 
+import com.myblog.adkblog.common.ratelimit.Limit;
 import com.myblog.adkblog.service.TagService;
 import com.myblog.adkblog.vo.Params.PageParams;
 import com.myblog.adkblog.vo.Result;
@@ -23,6 +24,7 @@ public class TagController {
 
     @GetMapping("add")
     @ApiOperation("添加标签Api")
+    @Limit(time = 120000,value = 5)//两分钟内只能添加五个标签
     public Result addTag(@RequestParam String tagName){
         return tagService.addTag(tagName);
     }

@@ -1,5 +1,6 @@
 package com.myblog.adkblog.controller;
 
+import com.myblog.adkblog.common.ratelimit.Limit;
 import com.myblog.adkblog.pojo.User;
 import com.myblog.adkblog.service.UserService;
 import com.myblog.adkblog.vo.Params.LikeOrCollectParams;
@@ -47,6 +48,7 @@ public class UserController {
     @ApiImplicitParams({
             @ApiImplicitParam(value = "认证请求头",required = true,paramType = "String")
     })
+    @Limit(time = 60000,value = 3)//一分钟内3次修改
     public Result updateUserInfoByToken(@RequestHeader("Authorization")String token,@RequestBody UpdateUserParams updateUserParams){
         return userService.updateUserInfoByToken(token,updateUserParams);
     }

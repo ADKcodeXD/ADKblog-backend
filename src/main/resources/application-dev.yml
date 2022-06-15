@@ -11,6 +11,17 @@ spring:
     multipart:
       max-file-size: 5MB
       max-request-size: 6MB
+  redis:
+    port: 6379
+    host: 127.0.0.1
+    password:
+    lettuce:
+      pool:
+        max-active: 5
+        max-wait: -1
+        max-idle: 500
+        min-idle: 0
+    timeout: 5000
 
 mybatis-plus:
   configuration:
@@ -21,9 +32,9 @@ mybatis-plus:
       table-prefix: bl_
 
 aliyun:
-  accessKeyId: accessKeyId
-  accessKeySecret: accessKeySecret
-  endpoint: endpoint
-  bucketName: bucketName
+  accessKeyId: 
+  accessKeySecret: 
+  endpoint: 
+  bucketName: 
 server:
   port: 8888

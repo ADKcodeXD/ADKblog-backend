@@ -7,11 +7,11 @@ import com.myblog.adkblog.dao.mapper.MessageMapper;
 import com.myblog.adkblog.pojo.Message;
 import com.myblog.adkblog.service.MessageService;
 import com.myblog.adkblog.vo.ErrorCode;
+import com.myblog.adkblog.vo.ListInfoVo;
 import com.myblog.adkblog.vo.MessageVo;
 import com.myblog.adkblog.vo.Params.MessageParams;
 import com.myblog.adkblog.vo.Params.PageParams;
 import com.myblog.adkblog.vo.Result;
-import lombok.Data;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-
-@Data
-class MessageResult{
-    Long length;
-    List<MessageVo> results;
-}
 @Service
 public class MessageServiceImpl implements MessageService {
     @Autowired
@@ -38,7 +32,7 @@ public class MessageServiceImpl implements MessageService {
         Message message = new Message();
         //头像为空 默认设置为该路径
         if(messageParams.getAvatar()==null){
-            messageParams.setAvatar("/static/img/avatar.png");
+            messageParams.setAvatar("/default_avatar.png");
         }
         BeanUtils.copyProperties(messageParams,message);
         message.setCreateDate(System.currentTimeMillis());
@@ -58,21 +52,18 @@ public class MessageServiceImpl implements MessageService {
             queryWrapper.orderByDesc(Message::getCreateDate);
         }
         //分页 不需要条件 选择十条即可
-        IPage<Message> messageIPage = messageMapper.selectPage(page,queryWrapper);
+        IPage<Message> messageIPage = messageMapper.selectPage(page, queryWrapper);
         //获取到records
         List<Message> records = messageIPage.getRecords();
-        List<MessageVo> messageVoList=new ArrayList<>();
+        List<MessageVo> messageVoList = new ArrayList<>();
         //复制到vo里面
-        for(Message record : records){
+        for (Message record : records) {
             messageVoList.add(copy(record));
         }
-
-        //返回一个带总数的list
-        Long total=messageIPage.getTotal();
-        MessageResult result = new MessageResult();
-        result.setLength(total);
-        result.setResults(messageVoList);
-        return Result.success(result);
+        ListInfoVo<MessageVo> messageVoListInfoVo = new ListInfoVo<>();
+        messageVoListInfoVo.setLength(page.getTotal());
+        messageVoListInfoVo.setResults(messageVoList);
+        return Result.success(messageVoListInfoVo);
     }
 
     public MessageVo copy(Message message){

@@ -126,9 +126,8 @@ public class ArticleServiceImpl implements ArticleService {
         }
         LambdaUpdateWrapper<Article> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
         lambdaUpdateWrapper.eq(Article::getId,article.getId());
-        /**
-         * 使用线程池   进行阅读量的更新
-         */
+
+
         articleMapper.update(articleComments,lambdaUpdateWrapper);
 
         return Result.success(articleVo);

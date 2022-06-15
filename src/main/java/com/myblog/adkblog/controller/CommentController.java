@@ -1,5 +1,6 @@
 package com.myblog.adkblog.controller;
 
+import com.myblog.adkblog.common.ratelimit.Limit;
 import com.myblog.adkblog.service.CommentService;
 import com.myblog.adkblog.vo.CommentVo;
 import com.myblog.adkblog.vo.Params.CommentParams;
@@ -19,6 +20,7 @@ public class CommentController {
 
     @PostMapping("addcomment")
     @ApiOperation("添加评论Api")
+    @Limit()
     public Result addComment(@RequestBody CommentParams commentParams){
         return commentService.addComment(commentParams);
     }

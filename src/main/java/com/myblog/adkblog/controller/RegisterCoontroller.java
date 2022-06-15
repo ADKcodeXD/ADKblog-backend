@@ -1,5 +1,6 @@
 package com.myblog.adkblog.controller;
 
+import com.myblog.adkblog.common.ratelimit.Limit;
 import com.myblog.adkblog.service.LoginService;
 import com.myblog.adkblog.vo.Params.LoginParams;
 import com.myblog.adkblog.vo.Params.RegisterParams;
@@ -21,6 +22,7 @@ public class RegisterCoontroller {
 
     @PostMapping
     @ApiOperation("注册用户Api")
+    @Limit(time = 60000,value = 1) //同一ip 一分钟内只能注册一次
     public Result login(@RequestBody RegisterParams registerParams){
         return loginService.register(registerParams);
     }

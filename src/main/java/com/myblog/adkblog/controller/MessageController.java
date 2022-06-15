@@ -1,6 +1,7 @@
 package com.myblog.adkblog.controller;
 
 
+import com.myblog.adkblog.common.ratelimit.Limit;
 import com.myblog.adkblog.service.MessageService;
 import com.myblog.adkblog.vo.Params.MessageParams;
 import com.myblog.adkblog.vo.Params.PageParams;
@@ -26,6 +27,7 @@ public class MessageController {
 
     @PostMapping("addmsg")
     @ApiOperation("添加留言的Api")
+    @Limit()
     public Result addMessage(@RequestBody MessageParams messageParams){
         return messageService.addMessage(messageParams);
     }

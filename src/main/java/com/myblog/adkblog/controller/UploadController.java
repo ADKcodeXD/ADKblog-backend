@@ -1,5 +1,6 @@
 package com.myblog.adkblog.controller;
 
+import com.myblog.adkblog.common.ratelimit.Limit;
 import com.myblog.adkblog.utils.AliossUtils;
 import com.myblog.adkblog.vo.ErrorCode;
 import com.myblog.adkblog.vo.Result;
@@ -27,6 +28,7 @@ public class UploadController {
 
     @PostMapping("img")
     @ApiOperation("上传图片")
+    @Limit(time = 60000,value = 5)
     public Result upload(@RequestParam("image") MultipartFile file){
         //获得文件原始名
         String originalFilename = file.getOriginalFilename();

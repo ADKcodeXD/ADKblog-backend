@@ -1,7 +1,8 @@
 package com.myblog.adkblog.controller;
 
+import com.myblog.adkblog.common.ratelimit.Limit;
+import com.myblog.adkblog.common.redis.Cache;
 import com.myblog.adkblog.service.ArticleService;
-import com.myblog.adkblog.utils.UserThreadLocal;
 import com.myblog.adkblog.vo.Params.ArticleParams;
 import com.myblog.adkblog.vo.Params.PageParams;
 import com.myblog.adkblog.vo.Result;
@@ -23,18 +24,21 @@ public class ArticleController {
      */
     @PostMapping("publish")
     @ApiOperation("发布文章api")
+    @Limit(time = 60000,value = 1)//一分钟内只能请求一次
     public Result publish(@RequestBody ArticleParams articleParams){
         return articleService.publish(articleParams);
     }
 
     @PostMapping("articlelist")
     @ApiOperation("获取文章列表Api")
+    @Cache(expire = 6000, name = "article")
     public Result listArticle(@RequestBody PageParams pageParams){
         return  articleService.listArticle(pageParams);
     }
 
     @PostMapping("articlelistcount")
     @ApiOperation("获取文章列表Api 有一个文章列表的长度")
+    @Cache(expire = 1 * 60 * 1000, name = "articleListCount")//1分钟的缓存有效
     public Result listArticleWithCount(@RequestBody PageParams pageParams){
         return  articleService.listArticleWithCount(pageParams);
     }
@@ -53,18 +57,21 @@ public class ArticleController {
 
     @GetMapping("indexbanner")
     @ApiOperation("获取首页轮播图数据Api")
+    @Cache(name = "indexBanner")
     public Result getIndexBanner(){
         return articleService.getIndexBanner();
     }
 
     @GetMapping("articletime")
     @ApiOperation("获取文章归档数据Api")
+    @Cache(name = "articleTime")
     public Result getGroupByTime(){
         return articleService.getGroupByTime();
     }
 
     @PostMapping("indexarticle")
     @ApiOperation("获取首页文章Api")
+    @Cache(name = "indexArticle")
     public Result getIndexArticle(@RequestBody PageParams pageParams){
         return articleService.getIndexArticle(pageParams);
     }
@@ -72,6 +79,7 @@ public class ArticleController {
     //搜索建议 只取十条
     @GetMapping("searchtip")
     @ApiOperation("获取搜索建议Api")
+    @Cache(name = "searchTip")
     public Result getSearchTip(@RequestParam String keyword){
         return articleService.getSearchTip(keyword);
     }
