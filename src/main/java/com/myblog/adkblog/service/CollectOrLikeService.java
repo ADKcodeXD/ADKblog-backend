@@ -1,9 +1,9 @@
 package com.myblog.adkblog.service;
 
-import com.myblog.adkblog.vo.ArticleVo;
-import com.myblog.adkblog.vo.ListInfoVo;
+import com.myblog.adkblog.vo.Views.ArticleVo;
+import com.myblog.adkblog.vo.Common.ListInfoVo;
 import com.myblog.adkblog.vo.Params.PageParams;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.Result;
 
 public interface CollectOrLikeService {
 

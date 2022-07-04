@@ -5,7 +5,7 @@ import com.myblog.adkblog.common.ratelimit.Limit;
 import com.myblog.adkblog.service.MessageService;
 import com.myblog.adkblog.vo.Params.MessageParams;
 import com.myblog.adkblog.vo.Params.PageParams;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

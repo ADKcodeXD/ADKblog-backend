@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace写上对应的dao名路径-->
+<mapper namespace="com.myblog.adkblog.dao.mapper.BgmCalendarMapper">
+    <select id="selectListByWeekDay" resultType="com.myblog.adkblog.pojo.bgm.CalendarItem">
+        select * from
+        bgm_calendar
+        where
+        (air_weekday = #{weekday} AND air_date > #{stamp})
+    </select>
+    <select id="selectOneById" resultType="com.myblog.adkblog.pojo.bgm.CalendarItem">
+        select * from
+            bgm_calendar
+        where
+            id = #{id}
+    </select>
+    <insert id="insertOne" parameterType="com.myblog.adkblog.pojo.bgm.CalendarItem">
+        INSERT INTO bgm_calendar
+        (`id`, `url`, `type`, `name`, `name_cn`, `summary`, `total`, `score`, `rank`, `large`, `common`, `small`, `medium`, `grid`, `doing`, `air_date`, `air_weekday`, `count`)
+        VALUES (#{id}, #{url}, #{type}, #{name}, #{name_cn}, #{summary},#{total},#{score}, #{rank}, #{large}, #{common},
+                #{small}, #{medium}, #{grid}, #{doing},#{air_date}, #{air_weekday}, #{count})
+    </insert>
+    <update id="updateOne" parameterType="com.myblog.adkblog.pojo.bgm.CalendarItem">
+        update bgm_calendar
+        set `name` = #{name}, `name_cn`=#{name_cn}, `summary` =#{summary},`total` =#{total},`score` =#{score},`rank`=#{rank},
+            `doing` =#{doing},`air_date` =#{air_date},`air_weekday` =#{air_weekday},`count` =#{count}
+        where id = #{id}
+    </update>
+</mapper>

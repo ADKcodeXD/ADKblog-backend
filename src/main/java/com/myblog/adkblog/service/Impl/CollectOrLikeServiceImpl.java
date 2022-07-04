@@ -10,8 +10,12 @@ import com.myblog.adkblog.service.CollectOrLikeService;
 import com.myblog.adkblog.service.LoginService;
 import com.myblog.adkblog.service.TagService;
 import com.myblog.adkblog.service.UserService;
-import com.myblog.adkblog.vo.*;
+import com.myblog.adkblog.vo.Common.ErrorCode;
+import com.myblog.adkblog.vo.Common.ListInfoVo;
+import com.myblog.adkblog.vo.Common.Result;
 import com.myblog.adkblog.vo.Params.PageParams;
+import com.myblog.adkblog.vo.Views.ArticleVo;
+import com.myblog.adkblog.vo.Views.UserVo;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,15 +140,12 @@ public class CollectOrLikeServiceImpl implements CollectOrLikeService {
         String id=article.getId().toString();
         articleVo.setId(id);
         //该工具类可以将不同bean相同的属性copy过去，但是类型不同是不可以copy的
-
         //手动将日期的long类型转换为字符串
         articleVo.setCreateDate(new DateTime(article.getCreateDate()).toString("yyyy-MM-dd HH:mm"));
-
         //由于并不是所有的接口都需要作者名和标签名
         //因此设置两个参数 isTag和isAuthor 来判断是否设置这两个参数
         Long articleid=article.getId();
         articleVo.setTags(tagService.findTagByArticleId(articleid));
-
         articleVo.setIsCollected(true);
         //获取作者 信息
         Long authorId = article.getAuthorId();

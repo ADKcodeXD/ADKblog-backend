@@ -27,6 +27,11 @@ public class WebMVCConfig implements WebMvcConfigurer {
                 .addPathPatterns("/articles/publish")
                 .addPathPatterns("/comments/addcomment")
                 .addPathPatterns("/tags/add")
+                .addPathPatterns("/articles/myarticle")
+                .addPathPatterns("/articles/updatemyarticle")
+                .addPathPatterns("/articles/deletemyarticle/**")
+                .addPathPatterns("/articles/switcharticlestate/**")
+                .addPathPatterns("/login/logout")
                 .addPathPatterns("/ws/**");
         //添加一个登录拦截器
     }

@@ -1,7 +1,7 @@
 package com.myblog.adkblog.common.ratelimit;
 
-import com.myblog.adkblog.vo.ErrorCode;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.ErrorCode;
+import com.myblog.adkblog.vo.Common.Result;
 import net.jodah.expiringmap.ExpirationPolicy;
 import net.jodah.expiringmap.ExpiringMap;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -36,20 +36,30 @@ public class LimitAop {
 
         // 获取Map value对象， 如果没有则返回默认值
         // //getOrDefault获取参数，获取不到则给默认值
-        ExpiringMap<String, Integer> em= map.getOrDefault(request.getRequestURI(), ExpiringMap.builder().variableExpiration().build());
+        ExpiringMap<String, Integer> em = map.getOrDefault(request.getRequestURI(), ExpiringMap.builder().variableExpiration().build());
         Integer Count = em.getOrDefault(request.getRemoteAddr(), 0);
+        // result的值就是被拦截方法的返回值
+
         if (Count >= limit.value()) {
             // 超过次数，不执行目标方法
-            return Result.fail(ErrorCode.RATE_LIMIT.getCode(),ErrorCode.RATE_LIMIT.getMsg());
-        } else if (Count == 0){
+            return Result.fail(ErrorCode.RATE_LIMIT.getCode(), ErrorCode.RATE_LIMIT.getMsg());
+        } else if (Count == 0) {
             // 第一次请求时，设置有效时间
             em.put(request.getRemoteAddr(), Count + 1, ExpirationPolicy.CREATED, limit.time(), TimeUnit.MILLISECONDS);
         } else {
             em.put(request.getRemoteAddr(), Count + 1);
         }
-        map.put(request.getRequestURI(), em);
-        // result的值就是被拦截方法的返回值
+        // 只要请求失败 那么就直接返回 不计入次数内(接口限制的是数据库的写入 并不限制其他的
         Object result = pjp.proceed();
+        if (result instanceof Result) {
+            Object data = ((Result) result).getData();
+            if (data == null) {
+                //建立于所有失败请求都不会设置data的前提下
+                em.put(request.getRemoteAddr(), Count - 1);
+                return result;
+            }
+        }
+        map.put(request.getRequestURI(), em);
         return result;
     }
 }

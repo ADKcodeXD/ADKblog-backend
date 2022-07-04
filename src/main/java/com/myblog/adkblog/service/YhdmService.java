@@ -1,6 +1,6 @@
 package com.myblog.adkblog.service;
 
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.Result;
 
 public interface YhdmService {
     Result getSearchInfo(String keywords);

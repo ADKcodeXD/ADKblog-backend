@@ -1,7 +1,12 @@
 package com.myblog.adkblog.service.Impl;
 
 import com.myblog.adkblog.service.YhdmService;
-import com.myblog.adkblog.vo.*;
+import com.myblog.adkblog.utils.Myutils;
+import com.myblog.adkblog.vo.Common.Epinfo;
+import com.myblog.adkblog.vo.Common.ListInfoVo;
+import com.myblog.adkblog.vo.Common.Result;
+import com.myblog.adkblog.vo.Views.YhdmSearchVo;
+import com.myblog.adkblog.vo.Views.YhdmVideoVo;
 import lombok.Data;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -20,15 +25,6 @@ public class YhdmServiceImpl implements YhdmService {
 
     private String searchUrl="http://www.yinghuacd.com/search/";
     private String baseUrl="http://www.yinghuacd.com/";
-    private String[] userAgents={"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:83.0) Gecko/20100101 Firefox/83.0",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36",
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36",
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
-            "Mozilla/5.0 (Linux; Android 10; HLK-AL00) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.92 Mobile Safari/537.36",
-            "Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36"};
-
-
     @Override
     public Result getSearchInfo(String keywords) {
         String url=searchUrl+keywords;
@@ -36,7 +32,7 @@ public class YhdmServiceImpl implements YhdmService {
         ListInfoVo<YhdmSearchVo> resultList = new ListInfoVo<>();
         try {
             Connection connection = Jsoup.connect(url);
-            connection.userAgent(userAgents[getRandomNum(userAgents.length)]);
+            connection.userAgent(Myutils.getRandomAgent());
             connection.timeout(8000);
             Document doc = connection.get();
             Elements lpic = doc.select(".area .fire .lpic");
@@ -55,7 +51,7 @@ public class YhdmServiceImpl implements YhdmService {
                 //重新发起请求
                 url=searchUrl+keywords+"/?page="+page;
                 connection = Jsoup.connect(url);
-                connection.userAgent(userAgents[getRandomNum(userAgents.length)]);
+                connection.userAgent(Myutils.getRandomAgent());
                 connection.timeout(8000);
                 doc = connection.get();
                 lpic = doc.select(".area .fire .lpic");
@@ -92,7 +88,7 @@ public class YhdmServiceImpl implements YhdmService {
                     YhdmSearchVo yhdmSearchVo = new YhdmSearchVo();
                     yhdmSearchVo.setTitle(itemUrl.title);
                     Connection connection1 = Jsoup.connect(itemUrl.getUrl());
-                    connection1.userAgent(userAgents[getRandomNum(userAgents.length)]);
+                    connection1.userAgent(Myutils.getRandomAgent());
                     connection1.timeout(8000);
                     Document doc2 = connection1.get();
                     Elements movurl = doc2.getElementsByClass("movurl");
@@ -136,7 +132,7 @@ public class YhdmServiceImpl implements YhdmService {
         YhdmVideoVo yhdmVideoVo = new YhdmVideoVo();
         try {
             Connection connection = Jsoup.connect(connectUrl);
-            connection.userAgent(userAgents[getRandomNum(userAgents.length)]);
+            connection.userAgent(Myutils.getRandomAgent());
             connection.timeout(8000);
             Document doc=connection.get();
             Elements select = doc.select(".bofang div");
@@ -169,9 +165,8 @@ public class YhdmServiceImpl implements YhdmService {
                 }
             }
         }catch (Exception e){
-            System.out.println(e);
+            e.printStackTrace();
         }
-
         return Result.success(yhdmVideoVo);
     }
 

@@ -30,11 +30,19 @@ mybatis-plus:
   global-config:
     db-config:
       table-prefix: bl_
-
+# 内网访问 就需要改成内网来进行
 aliyun:
-  accessKeyId: 
-  accessKeySecret: 
-  endpoint: 
-  bucketName: 
+  accessKeyId: your keyId
+  accessKeySecret: your keysecret
+  endpoint: your endpoint #开发环境直接使用公网上传图片
+  bucketName: your bucketName
 server:
   port: 8888
+bangumi:
+  api: https://api.bgm.tv
+  agent: your agent
+
+fileabsolutepath: D:\
+ossurl: your oss url 
+sitemapPath:  D:\
+baseUrl: your website

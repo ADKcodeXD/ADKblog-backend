@@ -28,4 +28,10 @@ public class PageParams {
     private String orderRole;
     @ApiParam("搜索关键字")
     private String keyword;
+    @ApiParam("搜索文章的板块用的")
+    private Integer pannel;
+    @ApiParam("这是搜索画廊用的")
+    private Integer tag;
+    @ApiParam("这是搜索画廊用的+1 是否原创")
+    private Integer isOrigin;
 }

@@ -1,6 +1,6 @@
 package com.myblog.adkblog.vo.Params;
 
-import com.myblog.adkblog.vo.TagVo;
+import com.myblog.adkblog.vo.Views.TagVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,4 +22,6 @@ public class ArticleParams {
     private String articleName;
     @ApiModelProperty("文章头图的链接 是url")
     private String banner;
+    @ApiModelProperty("文章板块 pannel")
+    private Integer pannel;
 }

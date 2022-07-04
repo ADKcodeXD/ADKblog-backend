@@ -27,13 +27,14 @@ public class Article {
     private String banner;
 
     private Long createDate;
-    /**
-     * 作者id
-     */
-    private Long authorId;
-    /**
-     * 内容id
-     */
-    private Long bodyId;
 
+    private Long authorId;
+
+    private Long bodyId;
+    //用于筛选是否为私人文章
+    private Integer isPrivate;
+    //用于筛选是否为公开文章
+    private Integer enable;
+    //用于筛选板块
+    private Integer pannel;
 }

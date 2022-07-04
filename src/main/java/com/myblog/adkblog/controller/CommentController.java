@@ -2,11 +2,10 @@ package com.myblog.adkblog.controller;
 
 import com.myblog.adkblog.common.ratelimit.Limit;
 import com.myblog.adkblog.service.CommentService;
-import com.myblog.adkblog.vo.CommentVo;
+import com.myblog.adkblog.vo.Views.CommentVo;
 import com.myblog.adkblog.vo.Params.CommentParams;
-import com.myblog.adkblog.vo.Params.LoginParams;
 import com.myblog.adkblog.vo.Params.PageParams;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.Result;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

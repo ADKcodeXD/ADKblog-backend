@@ -7,7 +7,7 @@ import com.myblog.adkblog.pojo.User;
 import com.myblog.adkblog.pojo.WsMessage;
 import com.myblog.adkblog.service.UserService;
 
-import com.myblog.adkblog.vo.UserVo;
+import com.myblog.adkblog.vo.Views.UserVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 

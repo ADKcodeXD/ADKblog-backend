@@ -5,7 +5,7 @@ import com.myblog.adkblog.common.redis.Cache;
 import com.myblog.adkblog.service.ArticleService;
 import com.myblog.adkblog.vo.Params.ArticleParams;
 import com.myblog.adkblog.vo.Params.PageParams;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -28,14 +28,26 @@ public class ArticleController {
     public Result publish(@RequestBody ArticleParams articleParams){
         return articleService.publish(articleParams);
     }
-
-    @PostMapping("articlelist")
-    @ApiOperation("获取文章列表Api")
-    @Cache(expire = 6000, name = "article")
-    public Result listArticle(@RequestBody PageParams pageParams){
-        return  articleService.listArticle(pageParams);
+    @PostMapping("myarticle")
+    @ApiOperation("获取我自己发布的文章")
+    public Result getMyArticles(@RequestBody PageParams pageParams){
+        return  articleService.getMyArticles(pageParams);
     }
-
+    @PostMapping("updatemyarticle")
+    @ApiOperation("修改我发布的文章")
+    public Result updateMyArticle(@RequestBody ArticleParams articleParams){
+        return  articleService.updateMyArticle(articleParams);
+    }
+    @PostMapping("deletemyarticle/{id}")
+    @ApiOperation("删除我发布的文章")
+    public Result deleteMyArticle(@PathVariable("id") String  id){
+        return  articleService.deleteMyArticle(id);
+    }
+    @PostMapping("switcharticlestate/{id}")
+    @ApiOperation("切换文章的状态（公开/私有）")
+    public Result switchArticleState(@PathVariable("id") String  id){
+        return  articleService.switchArticleState(id);
+    }
     @PostMapping("articlelistcount")
     @ApiOperation("获取文章列表Api 有一个文章列表的长度")
     @Cache(expire = 1 * 60 * 1000, name = "articleListCount")//1分钟的缓存有效
@@ -83,4 +95,6 @@ public class ArticleController {
     public Result getSearchTip(@RequestParam String keyword){
         return articleService.getSearchTip(keyword);
     }
+
+
 }

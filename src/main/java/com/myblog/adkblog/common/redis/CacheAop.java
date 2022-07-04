@@ -1,7 +1,7 @@
 package com.myblog.adkblog.common.redis;
 
 import com.alibaba.fastjson.JSON;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.Result;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -62,7 +62,12 @@ public class CacheAop {
             }
             //如果没有找到相应结果 就会从切点中获取返回的对应的结果
             Object proceed = pjp.proceed();
-            redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(proceed), Duration.ofMillis(cache.expire()));
+            if (proceed instanceof Result) {
+                //设置 返回结果 只有data不为空且状态为success时 才会存入缓存
+                if (((Result) proceed).isSuccess() && ((Result) proceed).getData() != null) {
+                    redisTemplate.opsForValue().set(redisKey, JSON.toJSONString(proceed), Duration.ofMillis(cache.expire()));
+                }
+            }
             return proceed;
         } catch (Throwable throwable) {
             throwable.printStackTrace();

@@ -3,8 +3,8 @@ package com.myblog.adkblog.service;
 import com.myblog.adkblog.pojo.User;
 import com.myblog.adkblog.vo.Params.LikeOrCollectParams;
 import com.myblog.adkblog.vo.Params.UpdateUserParams;
-import com.myblog.adkblog.vo.Result;
-import com.myblog.adkblog.vo.UserVo;
+import com.myblog.adkblog.vo.Common.Result;
+import com.myblog.adkblog.vo.Views.UserVo;
 import org.springframework.stereotype.Repository;
 
 @Repository

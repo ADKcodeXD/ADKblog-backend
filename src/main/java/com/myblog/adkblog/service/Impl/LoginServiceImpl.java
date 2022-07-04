@@ -6,10 +6,11 @@ import com.myblog.adkblog.pojo.User;
 import com.myblog.adkblog.service.LoginService;
 import com.myblog.adkblog.service.UserService;
 import com.myblog.adkblog.utils.JWTUtils;
-import com.myblog.adkblog.vo.ErrorCode;
+import com.myblog.adkblog.utils.UserThreadLocal;
+import com.myblog.adkblog.vo.Common.ErrorCode;
 import com.myblog.adkblog.vo.Params.LoginParams;
 import com.myblog.adkblog.vo.Params.RegisterParams;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.Result;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class LoginServiceImpl implements LoginService {
             return Result.fail(ErrorCode.IS_LOGINING.getCode(), ErrorCode.IS_LOGINING.getMsg());
         }
         //redis 中默认设置一天过期
-        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(user), 1, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(user), 5, TimeUnit.DAYS);
 
         return Result.success(token);
     }
@@ -80,7 +81,7 @@ public class LoginServiceImpl implements LoginService {
         String token = JWTUtils.createToken(newer.getId());
 
         //redis 中默认设置一天过期
-        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(user), 1, TimeUnit.DAYS);
+        redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(newer), 1, TimeUnit.DAYS);
 
         return Result.success(token);
     }
@@ -90,7 +91,6 @@ public class LoginServiceImpl implements LoginService {
         if (StringUtils.isBlank(token)) {
             return null;
         }
-        System.out.println(token);
         //使用jwtutils来进行token的检验，若不合法则返回空值
         Map<String, Object> map = JWTUtils.checkToken(token);
         if (map == null) {
@@ -107,5 +107,12 @@ public class LoginServiceImpl implements LoginService {
         //暂时不用redis  直接解析去mysql中获取
         //User user = userMapper.selectById((Serializable) map.get("userId"));
         return user;
+    }
+
+    @Override
+    public Result logout(String token) {
+        User user = UserThreadLocal.get();
+        redisTemplate.delete("TOKEN_"+token);
+        return Result.success(null);
     }
 }

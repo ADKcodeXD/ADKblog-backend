@@ -1,8 +1,8 @@
 package com.myblog.adkblog.service;
 
 import com.myblog.adkblog.vo.Params.PageParams;
-import com.myblog.adkblog.vo.Result;
-import com.myblog.adkblog.vo.TagVo;
+import com.myblog.adkblog.vo.Common.Result;
+import com.myblog.adkblog.vo.Views.TagVo;
 
 import java.util.List;
 

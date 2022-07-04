@@ -2,7 +2,7 @@ package com.myblog.adkblog.controller;
 
 import com.myblog.adkblog.common.redis.Cache;
 import com.myblog.adkblog.service.YhdmService;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

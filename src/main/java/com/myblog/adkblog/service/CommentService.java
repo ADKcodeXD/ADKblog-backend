@@ -1,10 +1,9 @@
 package com.myblog.adkblog.service;
 
-import com.myblog.adkblog.pojo.Comment;
-import com.myblog.adkblog.vo.CommentVo;
+import com.myblog.adkblog.vo.Views.CommentVo;
 import com.myblog.adkblog.vo.Params.CommentParams;
 import com.myblog.adkblog.vo.Params.PageParams;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.Result;
 
 import java.util.List;
 

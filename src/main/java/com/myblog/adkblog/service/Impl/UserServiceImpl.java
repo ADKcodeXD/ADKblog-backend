@@ -1,5 +1,6 @@
 package com.myblog.adkblog.service.Impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.myblog.adkblog.dao.mapper.ArticleMapper;
@@ -12,16 +13,19 @@ import com.myblog.adkblog.pojo.ArticleUserLike;
 import com.myblog.adkblog.pojo.User;
 import com.myblog.adkblog.service.LoginService;
 import com.myblog.adkblog.service.UserService;
-import com.myblog.adkblog.vo.ErrorCode;
+import com.myblog.adkblog.vo.Common.ErrorCode;
 import com.myblog.adkblog.vo.Params.LikeOrCollectParams;
 import com.myblog.adkblog.vo.Params.UpdateUserParams;
-import com.myblog.adkblog.vo.Result;
-import com.myblog.adkblog.vo.UserAllVo;
-import com.myblog.adkblog.vo.UserVo;
+import com.myblog.adkblog.vo.Common.Result;
+import com.myblog.adkblog.vo.Views.UserAllVo;
+import com.myblog.adkblog.vo.Views.UserVo;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,6 +40,8 @@ public class UserServiceImpl implements UserService {
     private ArticleUserLikeMapper articleUserLikeMapper;
     @Autowired
     private ArticleUserCollectMapper articleUserCollectMapper;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
     @Override
     public User findUser(String username, String password) {
         LambdaQueryWrapper<User> queryWrapper=new LambdaQueryWrapper<>();
@@ -154,7 +160,10 @@ public class UserServiceImpl implements UserService {
         userLambdaUpdateWrapper.eq(User::getId,user.getId());
         if(change!=null)
             userMapper.update(change,userLambdaUpdateWrapper);
-
+        //更新缓存
+        User user1 = userMapper.selectById(user.getId());
+        redisTemplate.opsForValue().set("TOKEN_"
+                + token, JSON.toJSONString(user1), 5, TimeUnit.DAYS);
         return Result.success(null);
     }
 

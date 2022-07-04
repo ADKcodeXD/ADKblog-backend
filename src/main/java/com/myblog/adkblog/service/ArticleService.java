@@ -2,10 +2,9 @@ package com.myblog.adkblog.service;
 
 import com.myblog.adkblog.vo.Params.ArticleParams;
 import com.myblog.adkblog.vo.Params.PageParams;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.Result;
 
 public interface ArticleService {
-    Result listArticle(PageParams pageParams);
 
     Result publish(ArticleParams articleParams);
 
@@ -22,4 +21,12 @@ public interface ArticleService {
     Result getIndexArticle(PageParams pageParams);
 
     Result getSearchTip(String keyword);
+
+    Result getMyArticles(PageParams pageParams);
+
+    Result updateMyArticle(ArticleParams articleParams);
+
+    Result deleteMyArticle(String articleId);
+
+    Result switchArticleState(String id);
 }

@@ -2,8 +2,8 @@ package com.myblog.adkblog.controller;
 
 import com.myblog.adkblog.common.ratelimit.Limit;
 import com.myblog.adkblog.utils.AliossUtils;
-import com.myblog.adkblog.vo.ErrorCode;
-import com.myblog.adkblog.vo.Result;
+import com.myblog.adkblog.vo.Common.ErrorCode;
+import com.myblog.adkblog.vo.Common.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +28,7 @@ public class UploadController {
 
     @PostMapping("img")
     @ApiOperation("上传图片")
-    @Limit(time = 60000,value = 5)
+    @Limit(time = 1000,value = 3)
     public Result upload(@RequestParam("image") MultipartFile file){
         //获得文件原始名
         String originalFilename = file.getOriginalFilename();
@@ -47,5 +47,26 @@ public class UploadController {
             }
         }
 
+    }
+    @PostMapping("imglocal")
+    @ApiOperation("上传图片至本地oss")
+    @Limit(time = 1000,value = 3)
+    public Result uploadLocal(@RequestParam("image") MultipartFile file){
+        //获得文件原始名
+        String originalFilename = file.getOriginalFilename();
+        //使用uuid new文件名
+        String fileName = UUID.randomUUID().toString() + "." + StringUtils.substringAfterLast(originalFilename, ".");
+        String url="";
+        try{
+            url = aliossUtils.saveToLocalfs(file, fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(!StringUtils.isBlank(url)){
+                return Result.success(url);
+            }else {
+                return Result.fail(ErrorCode.UPLOAD_ERROR.getCode(),ErrorCode.UPLOAD_ERROR.getMsg());
+            }
+        }
     }
 }

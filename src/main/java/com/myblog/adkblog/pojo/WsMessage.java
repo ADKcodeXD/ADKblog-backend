@@ -1,6 +1,6 @@
 package com.myblog.adkblog.pojo;
 
-import com.myblog.adkblog.vo.UserVo;
+import com.myblog.adkblog.vo.Views.UserVo;
 import lombok.Data;
 
 @Data
